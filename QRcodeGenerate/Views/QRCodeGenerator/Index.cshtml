@@ -1,0 +1,72 @@
+﻿<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
+    <nav class="my-2 my-md-0 mr-md-3">
+        @Html.ActionLink("Generate QR Code", "GenerateQRCode", new {@class= "p-2 text-dark" })
+        @Html.ActionLink("Scan QR Code", "ScannerQRCode", new { @class = "p-2 text-dark" })</a>
+        @Html.ActionLink("Read QR Code", "Read", new { @class = "p-2 text-dark" })
+        @Html.ActionLink("Get Tasks", "GetTasks", new { @class = "p-2 text-dark" })
+    </nav>
+    <a class="btn btn-outline-primary" href="#">Sign up</a>
+</div>
+<hr />
+<div class="d-flex">
+    @Html.DropDownList("Location", ViewBag.Locations as SelectList, "Выберите участок", new { id = "locations", @class = "btn", style = "color: #212529; background-color: #f8f9fa; border-color: #f8f9fa;" })
+    @Html.DropDownList("UnderLocation", ViewBag.UnderLocations as SelectList, "Выберите подучасток", new { id = "underlocations", @class = "btn", style = "color: #212529; background-color: #f8f9fa; border-color: #f8f9fa;" })
+    @Html.DropDownList("Machine", ViewBag.Machines as SelectList, "Выберите станок", new { id = "machine", @class = "btn", style = "color: #212529; background-color: #f8f9fa; border-color: #f8f9fa;" })
+    @Html.DropDownList("Operation", ViewBag.Operations as SelectList, "Выберите операцию", new { id = "operations", @class = "btn", style = "color: #212529; background-color: #f8f9fa; border-color: #f8f9fa;" })
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+    $(function () {
+
+        $('#locations').change(function()
+        {
+            // получаем выбранный id
+            var id = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetUnderLocations")/' + id,
+                success: function (data) {
+
+                    // заменяем содержимое присланным частичным представлением
+                    $('#underlocations').replaceWith(data);
+                        $('#underlocations').change(function()
+                        {
+                            // получаем выбранный id
+                            var id = $(this).val();
+                            $.ajax({
+                                type: 'GET',
+                                url: '@Url.Action("GetMachine")/'+ id,
+                                success: function (data) {
+
+                                    // заменяем содержимое присланным частичным представлением
+                                    $('#machine').replaceWith(data);
+                                     $('#machine').change(function()
+                                        {
+                                            // получаем выбранный id
+                                            var id = $(this).val();
+                                            $.ajax({
+                                                type: 'GET',
+                                                url: '@Url.Action("GetOperations")/' + id,
+                                                success: function (data) {
+
+                                                    // заменяем содержимое присланным частичным представлением
+                                                    $('#operations').replaceWith(data);
+                                                }
+                                            });
+                                        });
+                                }
+                            });
+                        });
+                }
+            });
+        });
+    })
+
+    </script>
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}

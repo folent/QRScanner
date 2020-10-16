@@ -1,0 +1,10 @@
+﻿@model IEnumerable<QRcodeGenerate.Models.UnderLocationModel>
+<select id="underlocations" name="UnderLocations" class="btn" style=" color: #212529; background-color: #f8f9fa; border-color: #f8f9fa;">
+    <option value="-1">Выберите подучасток</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id">@item.Name</option>
+    }
+</select>
+
+ 

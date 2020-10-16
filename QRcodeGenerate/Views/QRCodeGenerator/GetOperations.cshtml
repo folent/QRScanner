@@ -1,0 +1,9 @@
+﻿@model IEnumerable<QRcodeGenerate.Models.OperationModel>
+<select id="operations" name="Operations" class="btn" style=" color: #212529; background-color: #f8f9fa; border-color: #f8f9fa;">
+    <option value="-1">Выберите операцию</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id">@item.Name</option>
+    }
+</select>
+

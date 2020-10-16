@@ -1,0 +1,19 @@
+﻿@model IEnumerable<QRcodeGenerate.Models.OperationModel>
+@{
+    ViewBag.Title = "FindTask";
+}
+@{
+    if (Model.Any())
+    {
+        foreach (var item in Model)
+
+        {
+            <div id="task" class="alert alert-info" role="alert">@item.Name</div>
+        }
+    }
+    else
+    {
+        <div id="task" class="alert alert-danger" role="alert">Операция не найдена</div>
+    }
+}
+

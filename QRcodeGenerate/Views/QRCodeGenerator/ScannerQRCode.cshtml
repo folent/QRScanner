@@ -1,0 +1,84 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Scanner";
+}
+
+<h1>Scan from WebCam:</h1>
+<div>
+    <b>Device has camera: </b>
+    <span id="cam-has-camera"></span>
+    <br>
+    <b>Device has flash: </b>
+    <span id="cam-has-flash"></span>
+    <br>
+    <video id="qr-video"></video>
+    <br>
+</div>
+<b>Detected QR code: </b>
+<div id="cam-qr-result" class="alert alert-success" role="alert">None</div>
+<div id="task" class="alert alert-info" role="alert">None</div>
+<br>
+<b>Last detected at: </b>
+<span id="cam-qr-result-timestamp"></span>
+<br>
+<button id="start-button" class="btn btn-success btn-lg btn-block">SCAN QR CODE</button>
+<button id="stop-button" class="btn btn-danger btn-lg btn-block">STOP SCAN</button>
+
+@section scripts {
+    <script type="module">
+        import QrScanner from "../../Scripts/qr-scanner.min.js";
+        QrScanner.WORKER_PATH = '../../Scripts/qr-scanner-worker.min.js';
+
+        const video = document.getElementById('qr-video');
+        const camHasCamera = document.getElementById('cam-has-camera');
+        const camHasFlash = document.getElementById('cam-has-flash');
+        const flashToggle = document.getElementById('flash-toggle');
+        const flashState = document.getElementById('flash-state');
+        const camQrResult = document.getElementById('cam-qr-result');
+        const camQrResultTimestamp = document.getElementById('cam-qr-result-timestamp');
+        const fileSelector = document.getElementById('file-selector');
+        const fileQrResult = document.getElementById('file-qr-result');
+        const startButton = document.getElementById('start-button');
+        const stopButton = document.getElementById('stop-button');
+
+        function setResult(label, result) {
+            label.textContent = result;
+            camQrResultTimestamp.textContent = new Date().toString();
+            clearTimeout(label.highlightTimeout);
+            label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
+            scanner.stop();
+            $(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("FindTask")/' + result,
+                    success: function (data) {
+
+                        // заменяем содержимое присланным частичным представлением
+                        $('#task').replaceWith(data);
+                    }
+                })
+            })
+        }
+
+        // ####### Web Cam Scanning #######
+
+        QrScanner.hasCamera().then(hasCamera => camHasCamera.textContent = hasCamera);
+
+        const scanner = new QrScanner(video, result => setResult(camQrResult, result), error => {
+            camQrResult.textContent = error;
+        });
+
+        startButton.addEventListener('click', () => {
+            scanner.start();
+        });
+
+        stopButton.addEventListener('click', () => {
+            scanner.stop();
+        });
+    </script>
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+}

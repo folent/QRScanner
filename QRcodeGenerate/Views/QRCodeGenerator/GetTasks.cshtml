@@ -1,0 +1,36 @@
+﻿@model IEnumerable<QRcodeGenerate.Models.TechnologyModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "GetTasks";
+}
+
+<h2>GetTasks</h2>
+
+<div>
+    <h3>Распродажа книг</h3>
+    <table>
+        <tr class="header"> 
+
+            <td><p>ИД технологии</p></td>
+            <td><p>Название</p></td>
+            <td><p>Статус</p></td>
+            <td></td>
+        </tr>
+        @foreach (var b in Model)
+        {
+
+            <tr>
+                <td><p>@b.TechnologyId</p></td>
+                <td><p>@b.Name</p></td>
+                <td><p>
+                    @(b.Completed == 0 ? "Не выполнено" : null)
+                    @(b.Completed == 1 ? "Выполнено" : null)
+                    @(b.Completed == 2 ? "На производстве" : null)
+                    @(b.Completed == 3 ? "Упаковка" : null)
+                </td>
+              
+            </tr>
+        }
+    </table>
+
+</div>
